@@ -21,17 +21,17 @@ document.getElementById('calculateButton').addEventListener('click', () => {
         const sotDef = Math.floor(def * (100 + leadSkill) / 100) + defPass + defFLinks;
         const fullBuiltDef = Math.floor(sotDef * (100 + defPLinks) / 100) + buDefPass;
         let maxDef = Math.floor(fullBuiltDef * (100 + attackDefense) / 100);
-        const currentDef = maxDef;
+        let currentDef = maxDef;
         const staticDef = maxDef;
 
         const superDefs = [];
-        for (let i = 1; i < saTimes; i++) {
-            if (i === 1) {
-                currentDef = Math.floor(staticDef * (100 + saDefense) / 100));
+        for (let i = 0; i < saTimes; i++) {
+            if (i === 0) {
+                currentDef = Math.floor(staticDef * (100 + saDefense) / 100);
             } else if (saDefense2 > 0) {
-                currentDef = Math.floor(staticDef * (saDefense + (saDefense * i) + 100) / 100));
+                currentDef = Math.floor(staticDef * (100 + saDefense + (saDefense2 * i)) / 100);
             } else {
-                currentDef = Math.floor(staticDef * ((saDefense * (i + 1)) + 100) / 100));
+                currentDef = Math.floor(staticDef * (100 + saDefense * (i + 1)) / 100);
             }
             superDefs.push(currentDef);
         }
