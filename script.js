@@ -39,7 +39,6 @@ document.getElementById('calculateButton').addEventListener('click', () => {
         // Display results in the DOM
         document.getElementById('sotDefLabel').innerText = "SoT Defense: " + sotDef;
         document.getElementById('fullBuiltDefLabel').innerText = "Fully Built-up SoT Defense: " + fullBuiltDef;
-        document.getElementById('maxDefLabel').innerText = "Max Possible Defense: " + maxDef;
 
         const superDefPanel = document.getElementById('superDefPanel');
         superDefPanel.innerHTML = '';
@@ -48,6 +47,11 @@ document.getElementById('calculateButton').addEventListener('click', () => {
             p.innerText = `Defense after ${index + 1} Super(s): ${def}`;
             superDefPanel.appendChild(p);
         });
+
+        // Display Max Possible Defense after all supers
+        const maxDefLabel = document.createElement('p');
+        maxDefLabel.innerText = "Max Possible Defense: " + maxDef;
+        superDefPanel.appendChild(maxDefLabel);
 
     } catch (error) {
         alert("An error occurred: " + error.message);
