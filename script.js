@@ -48,6 +48,8 @@ document.getElementById('calculateButton').addEventListener('click', () => {
             superDefPanel.appendChild(p);
         });
 
+        let maxDef = superDefs[superDef.length - 1];
+
         // Display Max Possible Defense after all supers
         const maxDefLabel = document.createElement('p');
         maxDefLabel.innerText = "Max Possible Defense: " + maxDef;
