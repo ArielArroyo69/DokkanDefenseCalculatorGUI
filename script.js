@@ -1,6 +1,6 @@
-function calculateDefense() {
+document.getElementById('calculateButton').addEventListener('click', () => {
     try {
-        // Parse input fields
+        // Retrieve input values from the DOM
         const def = parseInt(document.getElementById('def').value);
         const leadSkill = parseInt(document.getElementById('leadSkill').value);
         const defPass = parseInt(document.getElementById('defPass').value) + parseInt(document.getElementById('defSupport').value);
@@ -10,84 +10,44 @@ function calculateDefense() {
         const attackDefense = parseInt(document.getElementById('attackDefense').value);
         const saDefense = parseInt(document.getElementById('saDefense').value);
         const saDefense2 = parseInt(document.getElementById('saDefense2').value);
-        let saTimes = parseInt(document.getElementById('saTimes').value);
-        if (saTimes === 0) saTimes = 1;
+        const saTimes = parseInt(document.getElementById('saTimes').value);
 
-        // Calculate defenses
-        const sotDef = calculateSoTDefense(def, leadSkill, defPass, defPLinks, defFLinks);
-        const fullBuiltUpDef = calculateFullBuiltUpSoTDefense(sotDef, buDefPass);
-        const maxDef = calculateMaxDefense(sotDef, buDefPass, attackDefense, saDefense, saDefense2, saTimes);
+        if (saTimes === 0) {
+            alert("Number of Supers per Turn cannot be 0");
+            return;
+        }
 
-        // Calculate defense after each super
-        const defenseAfterSupers = calculateDefenseAfterEachSuper(sotDef, buDefPass, attackDefense, saDefense, saDefense2, saTimes);
+        // Perform calculations
+        const sotDef = Math.floor(def * (1 + leadSkill / 100)) + defPass + defFLinks;
+        const fullBuiltDef = Math.floor(sotDef * (1 + defPLinks / 100)) + buDefPass;
+        let maxDef = Math.floor(fullBuiltDef * (1 + attackDefense / 100));
 
-        // Display the results
+        const superDefs = [];
+        for (let i = 1; i <= saTimes; i++) {
+            if (i === 1) {
+                maxDef = Math.floor(maxDef * (1 + saDefense / 100));
+            } else if (i === 2 && saDefense2 > 0) {
+                maxDef = Math.floor(maxDef * (1 + saDefense2 / 100));
+            } else {
+                maxDef = Math.floor(maxDef * (1 + saDefense / 100));
+            }
+            superDefs.push(maxDef);
+        }
+
+        // Display results in the DOM
         document.getElementById('sotDefLabel').innerText = "SoT Defense: " + sotDef;
-        document.getElementById('fullBuiltDefLabel').innerText = "Fully Built-up SoT Defense: " + fullBuiltUpDef;
+        document.getElementById('fullBuiltDefLabel').innerText = "Fully Built-up SoT Defense: " + fullBuiltDef;
         document.getElementById('maxDefLabel').innerText = "Max Possible Defense: " + maxDef;
 
-        // Clear previous labels
         const superDefPanel = document.getElementById('superDefPanel');
         superDefPanel.innerHTML = '';
-
-        // Add new labels based on the number of supers
-        for (let i = 0; i < saTimes; i++) {
-            const superDefLabel = document.createElement('p');
-            superDefLabel.innerText = "Defense after " + (i + 1) + " Super(s): " + defenseAfterSupers[i];
-            superDefPanel.appendChild(superDefLabel);
-        }
+        superDefs.forEach((def, index) => {
+            const p = document.createElement('p');
+            p.innerText = `Defense after ${index + 1} Super(s): ${def}`;
+            superDefPanel.appendChild(p);
+        });
 
     } catch (error) {
-        alert("Please enter valid numbers!");
+        alert("An error occurred: " + error.message);
     }
-}
-
-// Calculate SoT Defense
-function calculateSoTDefense(def, leadSkill, defPass, defPLinks, defFLinks) {
-    let sotDef = def;
-    sotDef *= (leadSkill + 100) / 100.0;
-    sotDef *= (defPass + 100) / 100.0;
-    sotDef *= (defPLinks + 100) / 100.0;
-    sotDef += defFLinks;
-    return sotDef;
-}
-
-// Calculate Fully Built-up SoT Defense
-function calculateFullBuiltUpSoTDefense(sotDef, buDefPass) {
-    return sotDef * (buDefPass + 100) / 100.0;
-}
-
-// Calculate Max Defense after supering
-function calculateMaxDefense(sotDef, buDefPass, attackDefense, saDefense, saDefense2, satimesperTurn) {
-    let maxDef = calculateFullBuiltUpSoTDefense(sotDef, buDefPass);
-    maxDef *= (attackDefense + 100) / 100.0;
-
-    if (satimesperTurn === 1) {
-        maxDef *= (saDefense + 100) / 100.0;
-    } else if (saDefense2 > 0) {
-        maxDef *= (saDefense + (saDefense2 * (satimesperTurn - 1)) + 100) / 100.0;
-    } else {
-        maxDef *= (saDefense * satimesperTurn + 100) / 100.0;
-    }
-    return maxDef;
-}
-
-// Calculate defense after each super
-function calculateDefenseAfterEachSuper(sotDef, buDefPass, attackDefense, saDefense, saDefense2, satimesperTurn) {
-    let currentDef = calculateFullBuiltUpSoTDefense(sotDef, buDefPass);
-    currentDef *= (attackDefense + 100) / 100.0;
-    const staticDef = currentDef;
-
-    const defenseAfterSupers = [];
-    for (let i = 0; i < satimesperTurn; i++) {
-        if (i === 0) {
-            currentDef = staticDef * (saDefense + 100) / 100.0;
-        } else if (saDefense2 > 0) {
-            currentDef = staticDef * (saDefense + (saDefense2 * i) + 100) / 100.0;
-        } else {
-            currentDef = staticDef * (saDefense * (i + 1) + 100) / 100.0;
-        }
-        defenseAfterSupers.push(currentDef);
-    }
-    return defenseAfterSupers;
-}
+});
