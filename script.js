@@ -18,8 +18,8 @@ document.getElementById('calculateButton').addEventListener('click', () => {
         }
 
         // Perform calculations
-        const sotDef = Math.floor(def * (100 + leadSkill) / 100) + defPass + defFLinks;
-        const fullBuiltDef = Math.floor(sotDef * (100 + defPLinks) / 100) + buDefPass;
+        const sotDef = Math.floor((def * (leadSkill + 100) / 100) * ((defPass + 100) / 100) * ((defPLinks + 100) / 100));
+        const fullBuiltDef = Math.floor(sotDef * (100 + buDefPass) / 100);
         let maxDef = Math.floor(fullBuiltDef * (100 + attackDefense) / 100);
         let currentDef = maxDef;
         const staticDef = maxDef;
